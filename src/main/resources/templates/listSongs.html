@@ -15,6 +15,20 @@
     <h1>Welcome to My Music Store</h1>
 </header>
 <main>
+
+    <form th:method="GET" th:action="@{/listSongs}">
+        <div>
+            <h2>Filter by Genre:</h2>
+            <select name="genre">
+                <option value="">All</option>
+                <!-- Display all genres -->
+                <option th:each="genre : ${genres}" th:value="${genre.name}" th:text="${genre.name}"></option>
+            </select>
+            <input type="submit" value="Filter">
+            <a th:href="@{/}">Reset</a>
+        </div>
+    </form>
+
     <form th:method="POST" th:action="@{/listSongs}">
         <h2>Choose a song:</h2>
         <!-- Display radio buttons for each song,
@@ -23,7 +37,7 @@
         <div th:each="song : ${songs}">
             <input type="radio" name="trackID" th:value="${song.trackId}">
             Title: <span th:text="${song.title}"></span>,
-            Genre: <span th:text="${song.genre}"></span>,
+            Genre: <span th:text="${song.genre.name}"></span>,
             Release Year: <span th:text="${song.releaseYear}"></span>
         </div>
         <input type='submit' value='Submit'>

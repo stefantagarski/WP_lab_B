@@ -2,6 +2,7 @@ package mk.finki.ukim.mk.lab.repository;
 
 import mk.finki.ukim.mk.lab.bootstrap.DataHolder;
 import mk.finki.ukim.mk.lab.model.Artist;
+import mk.finki.ukim.mk.lab.model.Genre;
 import mk.finki.ukim.mk.lab.model.Song;
 import org.springframework.stereotype.Repository;
 
@@ -22,5 +23,9 @@ public class SongRepository {
             song.getPerformers().add(artist);
         }
         return artist;
+    }
+    public List<Song> searchByGenre(Genre genre) {
+        return DataHolder.songList.stream().filter(r -> r.getGenre().getName().equals(genre.getName()))
+                .toList();
     }
 }

@@ -1,6 +1,7 @@
 package mk.finki.ukim.mk.lab.service.impl;
 
 import mk.finki.ukim.mk.lab.model.Artist;
+import mk.finki.ukim.mk.lab.model.Genre;
 import mk.finki.ukim.mk.lab.model.Song;
 import mk.finki.ukim.mk.lab.repository.SongRepository;
 import mk.finki.ukim.mk.lab.service.SongService;
@@ -30,5 +31,10 @@ public class SongServiceImpl implements SongService {
     @Override
     public Song findByTrackId(String trackId) {
         return repository.findByTrackId(trackId);
+    }
+
+    @Override
+    public List<Song> findSongsByGenre(Genre genre) {
+        return repository.searchByGenre(genre);
     }
 }

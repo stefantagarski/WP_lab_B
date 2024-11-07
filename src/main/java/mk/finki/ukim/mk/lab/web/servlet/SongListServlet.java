@@ -5,7 +5,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import mk.finki.ukim.mk.lab.model.Genre;
 import mk.finki.ukim.mk.lab.model.Song;
+import mk.finki.ukim.mk.lab.service.GenreService;
 import mk.finki.ukim.mk.lab.service.SongService;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -19,11 +21,13 @@ public class SongListServlet extends HttpServlet {
 
     private final SongService service;
     private final SpringTemplateEngine templateEngine;
+    private final GenreService genreService;
 
 
-    public SongListServlet(SongService service, SpringTemplateEngine templateEngine) {
+    public SongListServlet(SongService service, SpringTemplateEngine templateEngine, GenreService genreService) {
         this.service = service;
         this.templateEngine = templateEngine;
+        this.genreService = genreService;
     }
 
     @Override
@@ -33,7 +37,15 @@ public class SongListServlet extends HttpServlet {
                 .buildExchange(req, resp);
         WebContext context = new WebContext(webExchange);
 
-        context.setVariable("songs", service.listSongs());
+        context.setVariable("genres", genreService.listGenres());
+
+        String genre = req.getParameter("genre");
+        if (genre != null && !genre.isEmpty()) {
+            context.setVariable("songs", service.findSongsByGenre(new Genre(genre)));
+        } else {
+            context.setVariable("songs", service.listSongs());
+        }
+
         templateEngine.process("listSongs.html", context, resp.getWriter());
     }
 
