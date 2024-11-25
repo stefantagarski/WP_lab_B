@@ -3,19 +3,77 @@
 <head>
     <meta charset="utf-8">
     <title>Song Details</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0 auto;
+            padding: 20px;
+            max-width: 800px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
 
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            color: #2e8783;
+            margin: 0;
+        }
+
+        section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        section h2 {
+            font-size: 1.25rem;
+            color: #444;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        ul li {
+            background: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        ul li:hover {
+            background: #2e8783;
+            color: #fff;
+            transition: background 0.3s, color 0.3s;
+        }
+    </style>
 </head>
 <body>
 
 <header>
-    <h1 th:text="${session.song.title}"></h1>
+    <h1 th:text="${session.song.title}">Song Title</h1>
 </header>
 <section>
-    <h2 th:text="${session.song.genre.name}"></h2>
-    <h2 th:text="${session.song.releaseYear}"></h2>
+    <h2 th:text="${session.song.genre.name}">Genre</h2>
+    <h2 th:text="${session.song.releaseYear}">Release Year</h2>
     <h2>Performers:</h2>
     <ul>
-        <li th:text="${session.artists.firstName} + ' ' + ${session.artists.lastName}"></li>
+        <li th:text="${session.artists.getFirstName()} + ' ' + ${session.artists.lastName}">
+            Performer Name
+        </li>
     </ul>
 </section>
 

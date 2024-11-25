@@ -1,47 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>Songs Homepage - Welcome to My Music Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Songs</title>
     <style>
         body {
-            width: 800px;
+            max-width: 800px;
             margin: auto;
+            padding: 20px;
+        }
+
+        header h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2e8783;
+        }
+
+        .btn {
+            margin: 5px 0;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
 <header>
-    <h1>Welcome to My Music Store</h1>
+    <h1>Songs</h1>
 </header>
 <main>
+    <div th:if="${hasError}" class="error-message">
+        <h2 th:text="${error}"></h2>
+    </div>
 
-    <form th:method="GET" th:action="@{/listSongs}">
-        <div>
+    <form th:method="GET" th:action="@{/songs}" class="mb-4">
+        <div class="form-group">
             <h2>Filter by Genre:</h2>
-            <select name="genre">
+            <select name="genre" class="form-control">
                 <option value="">All</option>
-                <!-- Display all genres -->
                 <option th:each="genre : ${genres}" th:value="${genre.name}" th:text="${genre.name}"></option>
             </select>
-            <input type="submit" value="Filter">
-            <a th:href="@{/}">Reset</a>
+        </div>
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a th:href="@{/songs}" class="btn btn-secondary">Reset</a>
         </div>
     </form>
 
-    <form th:method="POST" th:action="@{/listSongs}">
-        <h2>Choose a song:</h2>
-        <!-- Display radio buttons for each song,
-                the value should be the trackId
-                and the displayed text should be Title: <songTitle>, Genre:<genre>, Release Year: <releaseYear> -->
-        <div th:each="song : ${songs}">
-            <input type="radio" name="trackID" th:value="${song.trackId}">
-            Title: <span th:text="${song.title}"></span>,
-            Genre: <span th:text="${song.genre.name}"></span>,
-            Release Year: <span th:text="${song.releaseYear}"></span>
+    <form th:method="POST" th:action="@{/songs/listArtist}">
+        <h2>Choose a Song:</h2>
+        <div class="list-group">
+            <div th:each="song : ${songs}" class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <input type="radio" name="trackID" th:value="${song.trackID}" class="mr-2">
+                        <strong th:text="${song.title}"></strong>
+                        <small class="text-muted">
+                            (Genre: <span th:text="${song.genre.name}"></span>,
+                            Release Year: <span th:text="${song.releaseYear}"></span>,
+                            Album: <span th:text="${song.album.name}"></span>)
+                        </small>
+                    </div>
+                    <div>
+                        <a th:href="@{/songs/delete-form/{id} (id=${song.id})}" class="btn btn-danger btn-sm">Delete</a>
+                        <a th:href="@{/songs/edit/{id} (id=${song.id})}" class="btn btn-info btn-sm">Edit</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <input type='submit' value='Submit'>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-success btn-block">Submit</button>
+        </div>
     </form>
+
+    <!-- Add New Event -->
+    <div class="mt-4">
+        <a th:href="@{/songs/add-Song}" class="btn btn-secondary btn-block">Add New Event</a>
+    </div>
 </main>
 </body>
 </html>
