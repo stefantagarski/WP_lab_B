@@ -30,30 +30,39 @@ public class SongController {
 
     @GetMapping()
     public String getSongsPage(@RequestParam(required = false) String error, Model model,
-                               @RequestParam(required = false) String genre) {
+                               @RequestParam(required = false) String albumID) {
         if (error != null && !error.isEmpty()) {
             model.addAttribute("hasError", true);
             model.addAttribute("error", error);
         }
 
-        model.addAttribute("genres", genreService.listGenres());
+        //model.addAttribute("genres", genreService.listGenres());
 
-        if (genre != null && !genre.isEmpty()) {
-            model.addAttribute("songs", songService.findSongsByGenre(new Genre(genre)));
-        }else {
+        model.addAttribute("albums", albumService.findAll());
+
+//        if (genre != null && !genre.isEmpty()) {
+//            model.addAttribute("songs", songService.findSongsByGenre(new Genre(genre)));
+//        }else {
+//            model.addAttribute("songs", songService.listSongs());
+//        }
+
+        if (albumID != null && !albumID.equals("All")) {
+            model.addAttribute("songs", songService.findAllByAlbum_Id(Long.parseLong(albumID)));
+        } else {
             model.addAttribute("songs", songService.listSongs());
         }
+
         return "listSongs";
     }
 
     @GetMapping("/delete-form/{id}")
     public String deletePage(@PathVariable Long id, Model model) {
         Song song = songService.findSongByID(id).get();
-        List<Genre> genres = genreService.listGenres();
+//        List<Genre> genres = genreService.listGenres();
         List<Album> albums = albumService.findAll();
 
-        model.addAttribute("song",song);
-        model.addAttribute("genres", genres);
+        model.addAttribute("song", song);
+//        model.addAttribute("genres", genres);
         model.addAttribute("albums", albums);
 
         return "delete-song";
@@ -69,11 +78,11 @@ public class SongController {
     public String editPage(@PathVariable Long id, Model model) {
         if (songService.findSongByID(id).isPresent()) {
             Song song = songService.findSongByID(id).get();
-            List<Genre> genres = genreService.listGenres();
+//            List<Genre> genres = genreService.listGenres();
             List<Album> albums = albumService.findAll();
 
-            model.addAttribute("song",song);
-            model.addAttribute("genres", genres);
+            model.addAttribute("song", song);
+//            model.addAttribute("genres", genres);
             model.addAttribute("albums", albums);
             return "add-song";
         }
@@ -91,13 +100,18 @@ public class SongController {
     }
 
     @PostMapping("/add")
-    public String saveOrUpdate(@RequestParam String  name,
+    public String saveOrUpdate(@RequestParam (required = false) Long id,
+                               @RequestParam String name,
                                @RequestParam String trackID,
                                @RequestParam int releaseYear,
-                               @RequestParam Long genreID,
-                               @RequestParam Long albumID){
+                               @RequestParam Long albumID) {
 
-        songService.saveOrUpdate(name, trackID, releaseYear, genreID, albumID);
+        if (id != null) {
+            songService.update(id, name, trackID, releaseYear, albumID);
+        } else {
+            songService.save(name, trackID, releaseYear, albumID);
+        }
+
         return "redirect:/songs";
     }
 

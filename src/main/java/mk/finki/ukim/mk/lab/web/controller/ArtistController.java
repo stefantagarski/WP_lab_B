@@ -38,7 +38,7 @@ public class ArtistController {
         Artist artist = artistService.artistFindById(artistID).get();
         Song song = (Song) session.getAttribute("song");
 
-        session.setAttribute("artists", songService.addArtistToSong(artist, song));
+       // session.setAttribute("artists", songService.addArtistToSong(artist, song));
         return "redirect:/songDetailsPage";
     }
 }

@@ -1,7 +1,7 @@
 package mk.finki.ukim.mk.lab.service.impl;
 
 import mk.finki.ukim.mk.lab.model.Artist;
-import mk.finki.ukim.mk.lab.repository.ArtistRepository;
+import mk.finki.ukim.mk.lab.repository.impl.InMemoryArtistRepository;
 import mk.finki.ukim.mk.lab.service.ArtistService;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +11,9 @@ import java.util.Optional;
 @Service
 public class ArtistServiceImpl implements ArtistService {
 
-    private final ArtistRepository repository;
+    private final InMemoryArtistRepository repository;
 
-    public ArtistServiceImpl(ArtistRepository repository) {
+    public ArtistServiceImpl(InMemoryArtistRepository repository) {
         this.repository = repository;
     }
 

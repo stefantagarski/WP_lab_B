@@ -41,10 +41,15 @@
 
     <form th:method="GET" th:action="@{/songs}" class="mb-4">
         <div class="form-group">
-            <h2>Filter by Genre:</h2>
-            <select name="genre" class="form-control">
+            <!--            <h2>Filter by Genre:</h2>-->
+            <!--            <select name="genre" class="form-control">-->
+            <!--                <option value="">All</option>-->
+            <!--                <option th:each="genre : ${genres}" th:value="${genre.name}" th:text="${genre.name}"></option>-->
+            <!--            </select>-->
+            <h2>Filter by Album:</h2>
+            <select name="albumID" class="form-control">-->
                 <option value="">All</option>
-                <option th:each="genre : ${genres}" th:value="${genre.name}" th:text="${genre.name}"></option>
+                <option th:each="album : ${albums}" th:value="${album.id}" th:text="${album.name}"></option>
             </select>
         </div>
         <div class="d-flex justify-content-between">
@@ -62,7 +67,6 @@
                         <input type="radio" name="trackID" th:value="${song.trackID}" class="mr-2">
                         <strong th:text="${song.title}"></strong>
                         <small class="text-muted">
-                            (Genre: <span th:text="${song.genre.name}"></span>,
                             Release Year: <span th:text="${song.releaseYear}"></span>,
                             Album: <span th:text="${song.album.name}"></span>)
                         </small>

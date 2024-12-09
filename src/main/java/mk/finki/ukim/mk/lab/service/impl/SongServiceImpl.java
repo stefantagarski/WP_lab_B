@@ -1,12 +1,11 @@
 package mk.finki.ukim.mk.lab.service.impl;
 
 import mk.finki.ukim.mk.lab.model.Album;
-import mk.finki.ukim.mk.lab.model.Artist;
-import mk.finki.ukim.mk.lab.model.Genre;
 import mk.finki.ukim.mk.lab.model.Song;
-import mk.finki.ukim.mk.lab.repository.AlbumRepository;
-import mk.finki.ukim.mk.lab.repository.GenreRepository;
-import mk.finki.ukim.mk.lab.repository.SongRepository;
+import mk.finki.ukim.mk.lab.model.exceptions.NoAlbumIDFoundException;
+import mk.finki.ukim.mk.lab.model.exceptions.NoSongIDFoundException;
+import mk.finki.ukim.mk.lab.repository.jpa.AlbumRepository;
+import mk.finki.ukim.mk.lab.repository.jpa.SongRepository;
 import mk.finki.ukim.mk.lab.service.SongService;
 import org.springframework.stereotype.Service;
 
@@ -17,51 +16,65 @@ import java.util.Optional;
 public class SongServiceImpl implements SongService {
 
     private final SongRepository songRepository;
-    private final GenreRepository genreRepository;
     private final AlbumRepository albumRepository;
 
 
-    public SongServiceImpl(SongRepository repository, GenreRepository genreRepository, AlbumRepository albumRepository) {
-        this.songRepository = repository;
-        this.genreRepository = genreRepository;
+    public SongServiceImpl(SongRepository songRepository, AlbumRepository albumRepository) {
+        this.songRepository = songRepository;
         this.albumRepository = albumRepository;
+
     }
+
 
     @Override
     public List<Song> listSongs() {
         return songRepository.findAll();
     }
 
-    @Override
-    public Artist addArtistToSong(Artist artist, Song song) {
-        return songRepository.addArtistToSong(artist, song);
-    }
 
     @Override
     public Optional<Song> findSongByID(Long id) {
-        return songRepository.findSongByID(id);
+        return songRepository.findById(id);
     }
 
     @Override
     public Song findByTrackId(String trackId) {
-        return songRepository.findByTrackId(trackId);
+        return songRepository.findByTrackID(trackId);
     }
 
     @Override
-    public List<Song> findSongsByGenre(Genre genre) {
-        return songRepository.searchByGenre(genre);
+    public Optional<Song> save(String name, String trackID, int releaseYear, Long albumID) {
+        Album album = albumRepository.findById(albumID).orElseThrow(() -> new NoAlbumIDFoundException(albumID));
+
+        Song song = new Song(name, trackID, releaseYear, album);
+
+        return Optional.of(songRepository.save(song));
+
     }
 
     @Override
-    public Optional<Song> saveOrUpdate(String name, String trackID, int releaseYear, Long genreID, Long albumID) {
-        Genre genre = genreRepository.findByID(genreID).orElse(null);
-        Album album = albumRepository.findByID(albumID).orElse(null);
+    public Optional<Song> update(Long id, String name, String trackID, int releaseYear, Long albumID) {
+        Album album = albumRepository.findById(albumID).orElseThrow(() -> new NoAlbumIDFoundException(albumID));
 
-        return songRepository.saveOrUpdate(name, trackID, releaseYear, genre, album);
+        Song song = songRepository.findById(id).orElseThrow(() -> new NoSongIDFoundException(albumID));
+
+        song.setTitle(name);
+        song.setTrackID(trackID);
+        song.setReleaseYear(releaseYear);
+        song.setAlbum(album);
+
+        return Optional.of(songRepository.save(song));
     }
+
+    @Override
+    public List<Song> findAllByAlbum_Id(Long albumId) {
+        return songRepository.findAllByAlbum_Id(albumId);
+    }
+
+
 
     @Override
     public void deleteByID(Long id) {
-        songRepository.deleteByID(id);
+        songRepository.deleteById(id);
     }
 }
